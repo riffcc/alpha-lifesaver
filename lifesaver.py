@@ -11,6 +11,7 @@ from __future__ import with_statement
 from grizzled.os import working_directory
 from urllib.parse import urlparse
 import os, sys, yaml, re
+import importlib
 
 # Setup URL parser, thanks https://www.geeksforgeeks.org/python-check-url-string/
 def ParseFindURLs(string):
@@ -97,6 +98,14 @@ with connection:
                     # Dynamically load in our magic config files
                     config = yaml.safe_load(open("rules/" + sourceDomain + ".yml"))
                     print(config["torrentregex"])
+                    # Jump into the handler for that domain (thanks https://stackoverflow.com/questions/22955684/how-to-import-py-file-from-another-directory)
+                    import importlib.machinery
+
+                    moduleName = sourceDomain.replace('.', '')
+                    loader = importlib.machinery.SourceFileLoader(moduleName, os.getcwd() + '/rules-py/' + moduleName + '.py')
+                    handle = loader.load_module(moduleName)
+
+                    handle.mainFunction(parameter)
 
             # Fetch the torrent
             #go("https://u.riff.cc/torrents/download/" + str(id))
