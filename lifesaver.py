@@ -1,5 +1,7 @@
 #!/opt/homebrew/bin/python3
 # Uses homebrew py3 because I am a bad person
+# https://stackoverflow.com/questions/10195139/how-to-retrieve-sql-result-column-value-using-column-name-in-python
+# https://github.com/PyMySQL/PyMySQL
 
 # Script to throw a lifesaver at Riff! :)
 import mysql.connector
@@ -18,22 +20,20 @@ if config is None:
 # Set our mysql password
 password = config["password"]
 
-mydb = mysql.connector.connect(
-  host="localhost",
-  user="unit3d",
-  password=password,
-  database="unit3d"
-)
+import pymysql.cursors
 
-mycursor = mydb.cursor()
+# Connect to the database
+connection = pymysql.connect(host='localhost',
+                             user='unit3d',
+                             password=password,
+                             database='unit3d',
+                             cursorclass=pymysql.cursors.DictCursor)
 
-mycursor.execute("SELECT * FROM torrents")
-
-myresult = mycursor.fetchall()
-
-row = dict(zip(mycursor.column_names, mycursor.fetchone()))
-print("{description}".format(row))
-
-cursor = cnx.cursor()
-cursor.execute(...)
-row = dict(zip(cursor.column_names, cursor.fetchone()))
+with connection:
+    with connection.cursor() as cursor:
+        # Read a single record
+        sql = "SELECT `id`, `description` FROM `torrents`"
+        cursor.execute(sql)
+        result_set = cursor.fetchall()
+        for row in result_set:
+            print("%s, %s" % (row["id"], row["description"]))
