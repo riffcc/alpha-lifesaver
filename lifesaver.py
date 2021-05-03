@@ -83,4 +83,3 @@ with connection:
             #go("https://u.riff.cc/torrents/download/" + str(id))
             #with working_directory("/tmp/torrents/"):
                 #save_html(str(id) + ".torrent")
-
