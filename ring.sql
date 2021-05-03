@@ -1,7 +1,7 @@
 /* Let's rescue some torrents! */
 USE unit3d;
 SELECT id, category_id, featured, description
-FROM `unit3d.torrents` WHERE seeders = 0
+FROM `torrents` WHERE seeders = 0
 INTO OUTFILE '/var/lib/mysql-files/ring.csv'
 FIELDS TERMINATED BY ','
 OPTIONALLY ENCLOSED BY '"'
