@@ -14,6 +14,8 @@ if config is None:
 
 # Set our mysql password
 qbtpass = config["qbtpassword"]
+rccuser = config["rccuser"]
+rccpass = config["rccpass"]
 
 from qbittorrent import Client
 
