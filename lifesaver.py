@@ -32,8 +32,12 @@ connection = pymysql.connect(host='localhost',
 with connection:
     with connection.cursor() as cursor:
         # Read a single record
-        sql = "SELECT `id`, `description` FROM `torrents`"
+        sql = "SELECT `id`, `description` FROM `torrents` WHERE seeders = 0"
         cursor.execute(sql)
         result_set = cursor.fetchall()
         for row in result_set:
-            print("%s, %s" % (row["id"], row["description"]))
+            id = row["id"]
+            print("id is: " + str(id))
+            row["description"]
+            description = (row["description"][:120] + '...') if len(row["description"]) > 120 else row["description"]
+            print("Description is: \n" + description)
