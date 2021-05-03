@@ -1,15 +1,23 @@
 #!/opt/homebrew/bin/python3
-# Script to throw a lifesaver at Riff! :)
+# Script to throw a lifesaver at dead Riff.CC releases! :)
+
 # Uses homebrew py3 because I am a bad person
 # Credits:
 #  - https://stackoverflow.com/questions/10195139/how-to-retrieve-sql-result-column-value-using-column-name-in-python
 #  - https://github.com/PyMySQL/PyMySQL
+
 # Import needed modules
 from __future__ import with_statement
 from grizzled.os import working_directory
-import os
-import sys
-import yaml
+import os, sys, yaml, re
+
+# Setup URL parser, thanks https://www.geeksforgeeks.org/python-check-url-string/
+def Find(string):
+    # findall() has been used 
+    # with valid conditions for urls in string
+    regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
+    url = re.findall(regex,string)      
+    return [x[0] for x in url]
 
 # Set our API key
 from pathlib import Path
@@ -61,11 +69,18 @@ with connection:
         result_set = cursor.fetchall()
         for row in result_set:
             id = row["id"]
-            print("id is: " + str(id))
-            row["description"]
-            description = (row["description"][:120] + '...') if len(row["description"]) > 120 else row["description"]
-            print("Description is: \n" + description)
+            print("Processing id "+ str(id))
+            description = row["description"]
+            # Grab our source from the description. Hopefully.
+            urlLines = []
+            for line in description.splitlines():
+                if "Source: [url]" in line:
+                    print(line)
+                    urlLines.append(line)
+
+            print(urlLines)
             # Fetch the torrent
-            go("https://u.riff.cc/torrents/download/" + str(id))
-            with working_directory("/tmp/torrents/"):
-                save_html(str(id) + ".torrent")
+            #go("https://u.riff.cc/torrents/download/" + str(id))
+            #with working_directory("/tmp/torrents/"):
+                #save_html(str(id) + ".torrent")
+
