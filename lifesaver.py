@@ -9,6 +9,7 @@
 # Import needed modules
 from __future__ import with_statement
 from grizzled.os import working_directory
+from urllib.parse import urlparse
 import os, sys, yaml, re
 
 # Setup URL parser, thanks https://www.geeksforgeeks.org/python-check-url-string/
@@ -41,14 +42,15 @@ sqlpassword = config["password"]
 # Login to Riff.CC
 # https://stackoverflow.com/questions/2910221/how-can-i-login-to-a-website-with-python
 
-from twill.commands import *
-go('https://u.riff.cc/login')
+if(config["login"]):
+    from twill.commands import *
+    go('https://u.riff.cc/login')
 
-showforms()
-fv("1", "username", rccuser)
-fv("1", "password", rccpass)
+    showforms()
+    fv("1", "username", rccuser)
+    fv("1", "password", rccpass)
 
-submit('0')
+    submit('0')
 
 # Set our mysql password
 
@@ -75,6 +77,7 @@ with connection:
             # Set up some empty arrays
             urlLines = []
             actualURLs = []
+            finalListOfURLs = []
             for line in description.splitlines():
                 if "Source: [url]" in line:
                     print(line)
@@ -85,10 +88,15 @@ with connection:
                 line = line.replace('[/url]', '')
                 actualURLs.append(ParseFindURLs(line))
 
-            # Go grab that source based on rules
+            # Go grab that torrent based on custom rules
             for actualURL in actualURLs:
-                for lololol in actualURL:
-                    print(lololol)
+                for actualActualURL in actualURL:
+                    # Find the source of the torrent
+                    sourceDomain = urlparse(actualActualURL).netloc
+                    print(sourceDomain)
+                    # Dynamically load in our magic config files
+                    config = yaml.safe_load(open("rules/" + sourceDomain + ".yml"))
+                    print(config["torrentregex"])
 
             # Fetch the torrent
             #go("https://u.riff.cc/torrents/download/" + str(id))
