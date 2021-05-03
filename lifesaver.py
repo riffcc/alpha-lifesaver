@@ -103,9 +103,9 @@ with connection:
 
                     moduleName = sourceDomain.replace('.', '')
                     loader = importlib.machinery.SourceFileLoader(moduleName, os.getcwd() + '/rules-py/' + moduleName + '.py')
-                    handle = loader.load_module(moduleName)
+                    lifehandler = loader.load_module(moduleName)
 
-                    handle.mainFunction(parameter)
+                    lifehandler.main()
 
             # Fetch the torrent
             #go("https://u.riff.cc/torrents/download/" + str(id))

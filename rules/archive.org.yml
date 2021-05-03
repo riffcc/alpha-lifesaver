@@ -1,0 +1,4 @@
+---
+fail: false
+method: torrent
+torrentregex: "lololol"

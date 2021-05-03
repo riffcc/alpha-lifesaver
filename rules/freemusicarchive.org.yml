@@ -1,0 +1,4 @@
+---
+fail: true
+method: manual
+torrentregex: "fma"
