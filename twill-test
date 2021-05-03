@@ -1,0 +1,4 @@
+fv "1" "username" "wings"
+fv "1" "password" "this-is-not-my-real-password-i-promise-3x1"
+go https://u.riff.cc/torrents/download/3447
+save_html lol.torrent

@@ -12,7 +12,7 @@ from grizzled.os import working_directory
 import os, sys, yaml, re
 
 # Setup URL parser, thanks https://www.geeksforgeeks.org/python-check-url-string/
-def Find(string):
+def ParseFindURLs(string):
     # findall() has been used 
     # with valid conditions for urls in string
     regex = r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.][a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!()\[\]{};:'\".,<>?«»“”‘’]))"
@@ -72,13 +72,24 @@ with connection:
             print("Processing id "+ str(id))
             description = row["description"]
             # Grab our source from the description. Hopefully.
+            # Set up some empty arrays
             urlLines = []
+            actualURLs = []
             for line in description.splitlines():
                 if "Source: [url]" in line:
                     print(line)
                     urlLines.append(line)
+            for line in urlLines:
+                # Sanitize the line
+                line = line.replace('[url]', '')
+                line = line.replace('[/url]', '')
+                actualURLs.append(ParseFindURLs(line))
 
-            print(urlLines)
+            # Go grab that source based on rules
+            for actualURL in actualURLs:
+                for lololol in actualURL:
+                    print(lololol)
+
             # Fetch the torrent
             #go("https://u.riff.cc/torrents/download/" + str(id))
             #with working_directory("/tmp/torrents/"):
